@@ -1,0 +1,20 @@
+---
+title: "Is Jonathan Tawn an under-achiever?" 
+output:pdf_document
+date: "2026-03-26"
+---
+
+1. Solve Fermat's last theorem....
+
+2. .. and the Riemann hypothesis.
+
+3. Read Cox and Hinkley, Barndorff-Nielssen and Cox, Billingsley, Hastie, Tibshirani and Friedman, Bickel and Doksum, Lehmann and Casella, Karlin and Taylor, Durett, Kallenberg, Gelman et al, Bernardo and Smith, Beirlant et al. 
+
+4. don't forget: avoid data for the moment. 
+
+
+p.s. i got this list of books from ChatGPT, which also recommended "Modelling Extremal Events: by Coles - Jon Tawn's own book; readable but the math can get very dense. 
+
+Abstract
+
+Sure, 50-plus PhD students in an academic career is a bit of a milestone. But did Jonathan achieve as much as he could, or indeed should, have? Or more precisely, if he hadn't opted for early retirement, what could he realistically have accomplished? We'll use some of the most sophisticted extreme value tools and software available to examine this question. The answer, at least by one version of the analysis, puts his apparent "success" in rather poor light, and leaves us wondering what might have happened if he'd only stuck at it a bit longer.  
