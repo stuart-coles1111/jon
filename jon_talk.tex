@@ -1,0 +1,155 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\documentclass[
+  ignorenonframetext,
+]{beamer}
+\newif\ifbibliography
+\usepackage{pgfpages}
+\setbeamertemplate{caption}[numbered]
+\setbeamertemplate{caption label separator}{: }
+\setbeamercolor{caption name}{fg=normal text.fg}
+\beamertemplatenavigationsymbolsempty
+% remove section numbering
+\setbeamertemplate{part page}{
+  \centering
+  \begin{beamercolorbox}[sep=16pt,center]{part title}
+    \usebeamerfont{part title}\insertpart\par
+  \end{beamercolorbox}
+}
+\setbeamertemplate{section page}{
+  \centering
+  \begin{beamercolorbox}[sep=12pt,center]{section title}
+    \usebeamerfont{section title}\insertsection\par
+  \end{beamercolorbox}
+}
+\setbeamertemplate{subsection page}{
+  \centering
+  \begin{beamercolorbox}[sep=8pt,center]{subsection title}
+    \usebeamerfont{subsection title}\insertsubsection\par
+  \end{beamercolorbox}
+}
+% Prevent slide breaks in the middle of a paragraph
+\widowpenalties 1 10000
+\raggedbottom
+\AtBeginPart{
+  \frame{\partpage}
+}
+\AtBeginSection{
+  \ifbibliography
+  \else
+    \frame{\sectionpage}
+  \fi
+}
+\AtBeginSubsection{
+  \frame{\subsectionpage}
+}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\usefonttheme[]{structurebold}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\usetheme[numbering = none]{metropolis}
+\usepackage{xcolor}
+\usepackage{amssymb}
+\usepackage{bbm}
+\usepackage{tikz}
+\usetikzlibrary{positioning,arrows.meta,matrix}
+\usetikzlibrary{calc}
+\definecolor{mygray}{gray}{0.9}
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={Is Jonathan Tawn an Under-Achiever?},
+  pdfauthor={Stuart Coles},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\title{\texorpdfstring{Is Jonathan Tawn an
+Under-Achiever?}{Is Jonathan Tawn an Under-Achiever?}}
+\author{\texorpdfstring{Stuart Coles}{Stuart Coles}}
+\date{Lancaster - 30 June, 2026}
+
+\begin{document}
+\frame{\titlepage}
+
+\begin{frame}{Ancient history}
+\protect\phantomsection\label{ancient-history}
+
+\vspace {0.5cm}
+\centering
+\input{lineage.tex}
+\end{frame}
+
+\begin{frame}{Recent history}
+\protect\phantomsection\label{recent-history}
+\begin{itemize}
+\item
+  BSc Mathematics (First Class Honours), Imperial College, London,
+  1982--85
+\item
+  Phd Statistics, University of Surrey, 1985--88
+\item
+  Lecturer, University of Sheffield (1988--1992)
+\item
+  Senior Lecturer, Lancaster University (1992--1996)
+\item
+  Professor of Statistics, Lancaster University (1996--2017)
+\item
+  Distinguished Professor of Statistics, Lancaster University
+  (2017--present)
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Awards}
+\protect\phantomsection\label{awards}
+\begin{itemize}
+\item
+  RSS Guy Medal in Bronze (1993)
+\item
+  RSS Barnett Award (2015, inaugural winner)
+\item
+  RSS Guy Medal in Silver (2024)
+\end{itemize}
+
+\pause
+
+\begin{itemize}
+\tightlist
+\item
+  Most senior academic in the world never to have owned a mobile phone.
+  (1991 - present.)
+\end{itemize}
+\end{frame}
+
+\end{document}

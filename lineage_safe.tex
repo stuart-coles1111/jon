@@ -1,0 +1,86 @@
+\begin{center}
+
+\begin{tikzpicture}[
+  >=Latex,
+  box/.style={
+    scale = 0.5,
+    transform shape,
+    rectangle,
+    rounded corners,
+    draw=black!60,
+    fill=blue!5,
+    align=center,
+    font=\large,
+    minimum width=3.2cm,
+    minimum height=1.25cm,
+    text width=3.2cm
+  }
+]
+
+% =========================
+% ROW 1 (5 nodes)
+% =========================
+\node[box] (a1) {Leibniz \\ \scriptsize 1646--1716};
+\node[box, right=3mm of a1] (a2) {Jacob Bernoulli \\ \scriptsize 1655--1705};
+\node[box, right=3mm of a2] (a3) {Johann Bernoulli \\ \scriptsize 1667--1748};
+\node[box, right=3mm of a3] (a4) {Euler \\ \scriptsize 1707--1783};
+\node[box, right=3mm of a4] (a5) {Lagrange \\ \scriptsize 1736--1813};
+
+% =========================
+% ROW 2 (5 nodes)
+% =========================
+\node[box, below=12mm of a1] (b1) {Poisson \\ \scriptsize 1781--1840};
+\node[box, right=3mm of b1] (b2) {Chasles \\ \scriptsize 1793--1880};
+\node[box, right=3mm of b2] (b3) {Newton \\ \scriptsize 1832--1912};
+\node[box, right=3mm of b3] (b4) {E. H. Moore \\ \scriptsize 1862--1932};
+\node[box, right=3mm of b4] (b5) {R. L. Moore \\ \scriptsize 1882--1974};
+
+% =========================
+% ROW 3 (5 nodes)
+% =========================
+\node[box, below=12mm of b1] (c1) {Kline \\ \scriptsize 1918--2002};
+\node[box, right=3mm of c1] (c2) {Flanders \\ \scriptsize 1924--2005};
+\node[box, right=3mm of c2] (c3) {Wolfowitz \\ \scriptsize 1910--1981};
+\node[box, right=3mm of c3] (c4) {A. H. Bowker \\\scriptsize 1919--2008};
+\node[box, right=3mm of c4] (c5) {Lieberman \\ \scriptsize Stanford (1953)};
+
+% =========================
+% ROW 4 (4 nodes + final)
+% =========================
+\node[box, below=12mm of c1] (d1) {Taylor \\ \scriptsize Stanford (1965)};
+\node[box, right=3mm of d1] (d2) {Smith \\ \scriptsize Cornell (1979)};
+\node[box, right=3mm of d2, fill=orange!25] (d3) {Tawn \\ \scriptsize Surrey (1988)};
+\node[box, right=3mm of d3, fill=yellow!25] (d4) {\textbf{All of us!} \\ \scriptsize Sheffield/Lancaster (1991+)};
+
+% =========================
+% ROW LINKS
+% =========================
+\draw[->] (a1) -- (a2);
+\draw[->] (a2) -- (a3);
+\draw[->] (a3) -- (a4);
+\draw[->] (a4) -- (a5);
+
+\draw[->] (b1) -- (b2);
+\draw[->] (b2) -- (b3);
+\draw[->] (b3) -- (b4);
+\draw[->] (b4) -- (b5);
+
+\draw[->] (c1) -- (c2);
+\draw[->] (c2) -- (c3);
+\draw[->] (c3) -- (c4);
+\draw[->] (c4) -- (c5);
+
+\draw[->] (d1) -- (d2);
+\draw[->] (d2) -- (d3);
+\draw[->] (d3) -- (d4);
+
+% =========================
+% SNAKE CONNECTIONS BETWEEN ROWS
+% =========================
+\draw[->] (a5) -- (b1);
+\draw[->] (b5) -- (c1);
+\draw[->] (c5) -- (d1);
+
+\end{tikzpicture}
+
+\end{center}

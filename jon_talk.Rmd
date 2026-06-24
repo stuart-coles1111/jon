@@ -1,0 +1,55 @@
+---
+title: "Is Jonathan Tawn an Under-Achiever?"
+date: Lancaster - 30 June, 2026
+author: Stuart Coles
+output: 
+    beamer_presentation: 
+       keep_tex: true
+header-includes:
+        - \usetheme[numbering = none]{metropolis}
+        - \usepackage{xcolor}
+        - \usepackage{amssymb}
+        - \usepackage{bbm}
+        - \usepackage{tikz}
+        - \usetikzlibrary{positioning,arrows.meta,matrix}
+        - \usetikzlibrary{calc}
+        - \definecolor{mygray}{gray}{0.9}
+fonttheme: "structurebold"
+---
+
+# Ancient history
+
+    
+```{=latex}
+
+\vspace {0.5cm}
+\centering
+\input{lineage.tex}
+```
+
+# Recent history
+
+* BSc Mathematics (First Class Honours), Imperial College, London, 1982--85
+
+* Phd Statistics, University of Surrey, 1985--88
+
+* Lecturer, University of Sheffield (1988–1992)
+
+* Senior Lecturer, Lancaster University (1992–1996)
+
+* Professor of Statistics, Lancaster University (1996–2017)
+
+* Distinguished Professor of Statistics, Lancaster University (2017–present)
+
+# Awards
+
+* RSS Guy Medal in Bronze (1993)
+
+* RSS Barnett Award (2015, inaugural winner)
+
+* RSS Guy Medal in Silver (2024)
+
+\pause
+
+* Most senior academic in the world never to have owned a mobile phone. (1991 - present)
+
