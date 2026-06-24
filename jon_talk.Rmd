@@ -28,6 +28,8 @@ fonttheme: "structurebold"
 \input{lineage.tex}
 ```
 
+# Early days
+
 # Recent history
 
 * BSc Mathematics (First Class Honours), Imperial College, London, 1982--85
@@ -62,7 +64,7 @@ fonttheme: "structurebold"
 
 \vspace{1cm}
 
-* Most senior academic in the world to not own a mobile phone. (1991 - present)
+* Most distinguished professor in the world not to own a mobile phone. (1991 - present)
 
 
 # Back to Recent history
