@@ -28,7 +28,26 @@ fonttheme: "structurebold"
 \input{lineage.tex}
 ```
 
-# Early days
+# Early history
+
+```{r, echo=FALSE,fig.align = 'center',  out.width="60%"}
+knitr::include_graphics("pics/jpic1.JPG")
+```
+
+
+# Early history
+
+```{r, echo=FALSE,fig.align = 'center',  out.width="60%"}
+knitr::include_graphics("pics/jpic2.JPG")
+```
+
+
+# Early history
+
+```{r, echo=FALSE,fig.align = 'center',  out.width="60%"}
+knitr::include_graphics("pics/jpic3.JPG")
+```
+
 
 # Recent history
 
@@ -53,12 +72,7 @@ fonttheme: "structurebold"
 * RSS Guy Medal in Silver (2024)
 
 
-# New Award
-
-\vspace{-2cm}
-\begin{Huge}
-\color[RGB]{255,215,0}\faTrophy
-\end{Huge}
+# \begingroup\color[RGB]{255,215,0}\faMedal\endgroup\ New Award
 
 \pause
 
@@ -80,3 +94,115 @@ fonttheme: "structurebold"
 * Professor of Statistics, Lancaster University (1996–2017)
 
 * Distinguished Professor of Statistics, Lancaster University (2017–present)
+
+# 
+```{r, echo = FALSE, fig.width=6, fig.height=4, out.width="80%"}
+library(ggplot2)
+tawn <- data.frame(
+    year = c(1991, 1994, 1995, 1997, 2000, 2003, 2005, 2006, 2007, 2009,
+             2010, 2012, 2013, 2014, 2015, 2016, 2018, 2019, 2020, 2021, 2026),
+    n_students = c(1, 1, 2, 3, 1, 4, 1, 1, 5, 1,
+                   1, 1, 2, 1, 2, 5, 2, 4, 1, 3, 6)
+)
+
+years_full <- 1991:2026
+
+tawn_full <- data.frame(
+    year = years_full,
+    n_students = sapply(years_full, function(y) {
+        if (y %in% tawn$year) {
+            tawn$n_students[tawn$year == y]
+        } else {
+            0
+        }
+    })
+)
+
+ggplot(tawn_full, aes(x = year, y = n_students)) +
+    geom_col(fill = "#2C7FB8", width = 0.8) +
+    geom_text(
+        aes(label = ifelse(n_students > 0, n_students, "")),
+        vjust = -0.3,
+        size = 3
+    ) +
+    scale_x_continuous(
+        breaks = seq(1990, 2026, by = 5),
+        expand = expansion(mult = c(0.01, 0.02))
+    ) +
+    scale_y_continuous(
+        breaks = 0:max(tawn_full$n_students),
+        expand = expansion(mult = c(0, 0.1))
+    ) +
+    labs(
+        title = "Annual Jon Tawn PhD Output",
+        subtitle = "Number of PhD students graduating each year",
+        x = NULL,
+        y = "PhD students"
+    ) +
+    theme_minimal(base_size = 14) +
+    theme(
+        panel.grid.minor = element_blank(),
+        plot.title = element_text(face = "bold"),
+        axis.text.x = element_text(angle = 45, hjust = 1)
+    )
+
+```
+
+# While I'm away for the next couple of weeks...
+
+```{r, echo=FALSE,fig.align = 'center', out.width="50%"}
+knitr::include_graphics("StuTasks.pdf")
+```
+
+# Missing page of tasks for "next couple of weeks"
+
+\pause
+
+1. Prove Fermat's last theorem...
+
+\pause
+
+2. ... and the Riemann hypothesis.
+
+\pause
+
+
+3. Read Cox and Hinkley, Barndorff-Nielssen and Cox, Billingsley, Hastie, Tibshirani and Friedman, Bickel and Doksum, Lehmann and Casella, Karlin and Taylor, Durett, Kallenberg, Gelman et al, Bernardo and Smith, Beirlant et al. 
+
+\pause
+
+4. Actually, scrap that. Just read the library.
+
+\pause
+
+5. don't forget: avoid data for the moment. 
+
+# An aside
+
+While getting a list of book references to include above, ChatGPT gave me this insightful suggestion:
+
+\pause
+\vspace{1cm}
+> "Modelling Extremal Events": by Coles - Jon Tawn's own book; readable but the math can get very dense. 
+
+# A confession...
+
+\pause
+
+I *only* looked at data for that couple of weeks. 
+
+# Jon's philosophy as a supervisor
+
+> "A PhD is a training for research"
+
+Can also identify a pattern:
+
+* Take time to research scientific context as well as statistics
+
+* Choose and design models with care, using science and mathematics as steers where available.
+
+* Check the fit of models carefully.
+
+* Use model outputs to create a scientific narrative.
+
+
