@@ -95,8 +95,468 @@ knitr::include_graphics("pics/jpic3.JPG")
 
 * Distinguished Professor of Statistics, Lancaster University (2017–present)
 
-# 
-```{r, echo = FALSE, fig.width=6, fig.height=4, out.width="80%"}
+
+# While I'm away for the next couple of weeks...
+
+```{r, echo=FALSE,fig.align = 'center', out.width="50%"}
+knitr::include_graphics("StuTasks.pdf")
+```
+
+# Missing page of tasks for "next couple of weeks"
+
+\pause
+
+1. Prove Fermat's last theorem...
+
+\pause
+
+2. ... and the Riemann hypothesis.
+
+\pause
+
+
+3. Read Cox and Hinkley, Barndorff-Nielssen and Cox, Billingsley, 
+Bickel and Doksum, Lehmann and Casella, Karlin and Taylor, Durett, Kallenberg, Gelman et al, Bernardo and Smith, Beirlant et al. 
+
+\pause
+
+4. Actually, scrap that. Just read the library.
+
+\pause
+
+5. Don't forget: avoid data for the moment. 
+
+# An aside
+
+While getting a list of book references to include above, ChatGPT gave me this insightful suggestion:
+
+\pause
+\vspace{1cm}
+> "Modelling Extremal Events": by Coles - Jon Tawn's own book; readable but the math can get very dense. 
+
+# A confession...
+
+\pause
+
+I *only* looked at data for that couple of weeks. 
+
+# A plug...
+
+Myself, Anthony and Miguel de Carvalho are currently working on a Second Edition of "Jon's book":
+
+```{r, echo=FALSE,fig.align = 'center',  out.width="30%"}
+knitr::include_graphics("pics/ismev2a.pdf")
+```
+
+# Jon's philosophy as a supervisor
+
+> "A PhD is a training for research"
+
+\pause
+
+His methods were also a lesson:
+
+* Take time to research the scientific context to a problem, as well as the relevant statistics.
+
+* Choose and design models with care, using science and mathematics as steers where available.
+
+* Check the fit of models carefully.
+
+* Use learnings from models to create a scientific narrative.
+
+* Seek to push back the boundaries of knowledge.
+
+
+# An Outline of EVT
+
+```{r, echo=FALSE,fig.align = 'center', out.width="80%"}
+library(dplyr)
+library(ggplot2)
+
+set.seed(123)
+
+n <- 60
+u <- 1.7
+
+dat <- data.frame(
+    time = 1:n,
+    value = cumsum(rnorm(n, 0, 0.15)) + rexp(n, 1)
+)
+
+dat$block <- rep(1:6, each = 10)
+
+# block maxima
+bm <- dat |>
+    group_by(block) |>
+    slice_max(value, n = 1) |>
+    mutate(method = "Block maxima")
+
+# threshold exceedances
+pot <- dat |>
+    filter(value > u) |>
+    mutate(method = "POT / Point Process")
+
+base <- bind_rows(
+    dat |> mutate(method = "Block maxima"),
+    dat |> mutate(method = "POT / Point Process")
+)
+ggplot(base, aes(time, value)) +
+
+  # underlying process
+  geom_line(
+    colour = "#B8C2CC",
+    linewidth = 0.9
+  ) +
+
+  # block boundaries
+  geom_vline(
+    data = data.frame(
+      x = seq(10.5, 50.5, by = 10),
+      method = "Block maxima"
+    ),
+    aes(xintercept = x),
+    colour = "#D9DDE1",
+    linewidth = 0.5,
+    linetype = 2,
+    inherit.aes = FALSE
+  ) +
+
+  # threshold
+  geom_hline(
+    data = data.frame(
+      method = "POT / Point Process",
+      u = u
+    ),
+    aes(yintercept = u),
+    colour = "#5B8E7D",
+    linewidth = 0.8,
+    inherit.aes = FALSE
+  ) +
+
+  # retained observations
+  geom_point(
+    data = bm,
+    colour = "#2C7FB8",
+    fill = "#2C7FB8",
+    size = 2.3
+  ) +
+
+  geom_point(
+    data = pot,
+    colour = "#2C7FB8",
+    fill = "#2C7FB8",
+    size = 2.3
+  ) +
+
+  facet_wrap(~method, ncol = 1) +
+
+  labs(
+    title = "Modelling Extremes",
+    subtitle = "Block maxima versus POT / point process",
+    x = "Time",
+    y = NULL
+  ) +
+
+  theme_minimal(base_size = 17) +
+
+  theme(
+    plot.title = element_text(
+      face = "bold",
+      size = 22
+    ),
+
+    plot.subtitle = element_text(
+      size = 14,
+      colour = "grey35"
+    ),
+
+    strip.text = element_text(
+      face = "bold",
+      size = 15
+    ),
+
+    panel.grid.minor = element_blank(),
+    panel.grid.major.x = element_blank(),
+
+    panel.spacing = unit(1.2, "lines"),
+
+    axis.title = element_text(size = 14),
+    axis.text = element_text(size = 12)
+  )
+```
+
+# Extremes of two (or more) quantities
+
+```{r, echo=FALSE,fig.align = 'center', out.width="80%"}
+
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(patchwork)
+
+set.seed(123)
+
+# --------------------------------------------------
+# Simulated bivariate time series
+# --------------------------------------------------
+
+n_years <- 10
+obs_per_year <- 20
+n <- n_years * obs_per_year
+
+dat <- data.frame(
+  time = 1:n,
+  year = rep(1:n_years, each = obs_per_year)
+)
+
+dat$x <- rgamma(n, shape = 2, scale = 1)
+dat$y <- 0.7 * dat$x + rgamma(n, shape = 2, scale = 0.7)
+
+# --------------------------------------------------
+# Block maxima (marginal)
+# --------------------------------------------------
+
+bm_x <- dat |>
+  group_by(year) |>
+  slice_max(x, n = 1, with_ties = FALSE) |>
+  ungroup()
+
+bm_y <- dat |>
+  group_by(year) |>
+  slice_max(y, n = 1, with_ties = FALSE) |>
+  ungroup()
+
+bm <- bind_rows(
+  bm_x |> mutate(series = "X"),
+  bm_y |> mutate(series = "Y")
+)
+
+bm_long <- bm |>
+  pivot_longer(
+    cols = c(x, y),
+    names_to = "var",
+    values_to = "value"
+  )
+
+# --------------------------------------------------
+# Point process (joint extremes)
+# --------------------------------------------------
+
+u <- quantile(pmax(dat$x, dat$y), 0.90)
+
+pp <- dat |>
+  filter(pmax(x, y) > u)
+
+# --------------------------------------------------
+# Time series plot
+# --------------------------------------------------
+
+dat_long <- dat |>
+  pivot_longer(
+    cols = c(x, y),
+    names_to = "var",
+    values_to = "value"
+  )
+
+p_time <- ggplot(dat_long, aes(time, value)) +
+
+  geom_line(colour = "grey78", linewidth = 0.8) +
+
+  geom_vline(
+    xintercept = seq(obs_per_year + 0.5,
+                     n - obs_per_year + 0.5,
+                     by = obs_per_year),
+    colour = "grey90",
+    linetype = 2
+  ) +
+
+  geom_point(
+    data = bm_long,
+    colour = "#D55E00",
+    size = 2
+  ) +
+
+  facet_wrap(~var, ncol = 1, scales = "free_y") +
+
+  labs(
+    title = "Block maxima (marginal approach)",
+    subtitle = "One extreme per block per variable",
+    x = "Time",
+    y = NULL
+  ) +
+
+  theme_minimal(base_size = 15) +
+  theme(
+    panel.grid.minor = element_blank(),
+    panel.grid.major.x = element_blank(),
+    strip.text = element_text(face = "bold")
+  )
+
+# --------------------------------------------------
+# Point process plot
+# --------------------------------------------------
+
+p_space <- ggplot(dat, aes(x = x, y = y)) +
+
+  annotate("rect",
+           xmin = u, xmax = Inf,
+           ymin = 0, ymax = Inf,
+           fill = "#56B4E9", alpha = 0.12) +
+
+  annotate("rect",
+           xmin = 0, xmax = u,
+           ymin = u, ymax = Inf,
+           fill = "#56B4E9", alpha = 0.12) +
+
+  geom_point(colour = "grey80", size = 1.2) +
+
+  geom_point(
+    data = pp,
+    colour = "#0072B2",
+    size = 2
+  ) +
+
+  geom_vline(xintercept = u, colour = "#0072B2", linewidth = 0.7) +
+  geom_hline(yintercept = u, colour = "#0072B2", linewidth = 0.7) +
+
+  coord_equal() +
+
+  labs(
+    title = "Point process approach",
+    subtitle = "All observations with max(X, Y) > u",
+    x = expression(X),
+    y = expression(Y)
+  ) +
+
+  theme_minimal(base_size = 15) +
+  theme(panel.grid.minor = element_blank())
+
+# --------------------------------------------------
+# Combine panels
+# --------------------------------------------------
+
+p_time + p_space +
+  plot_layout(widths = c(1.2, 1)) +
+  plot_annotation(
+    title = "Bivariate extremes: block maxima vs point process",
+    theme = theme(
+      plot.title = element_text(size = 20, face = "bold")
+    )
+  )
+```
+
+# Component-by-component maxima
+
+```{r, echo=FALSE,fig.align = 'center', out.width="80%"}
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+
+set.seed(123)
+
+# --------------------------------------------------
+# Simulated bivariate time series
+# --------------------------------------------------
+
+n_years <- 10
+obs_per_year <- 20
+n <- n_years * obs_per_year
+
+dat <- data.frame(
+  time = 1:n,
+  year = rep(1:n_years, each = obs_per_year)
+)
+
+dat$x <- rgamma(n, shape = 2, scale = 1)
+dat$y <- 0.7 * dat$x + rgamma(n, shape = 2, scale = 0.7)
+
+# --------------------------------------------------
+# Marginal block maxima
+# --------------------------------------------------
+
+bm_x <- dat |>
+  group_by(year) |>
+  slice_max(x, n = 1, with_ties = FALSE) |>
+  ungroup() |>
+  transmute(time, var = "x", value = x)
+
+bm_y <- dat |>
+  group_by(year) |>
+  slice_max(y, n = 1, with_ties = FALSE) |>
+  ungroup() |>
+  transmute(time, var = "y", value = y)
+
+bm_long <- bind_rows(bm_x, bm_y)
+
+# --------------------------------------------------
+# Long format for plotting
+# --------------------------------------------------
+
+dat_long <- dat |>
+  pivot_longer(
+    cols = c(x, y),
+    names_to = "var",
+    values_to = "value"
+  )
+
+# --------------------------------------------------
+# Plot
+# --------------------------------------------------
+
+ggplot(dat_long, aes(time, value)) +
+
+  geom_line(
+    colour = "grey75",
+    linewidth = 0.8
+  ) +
+
+  geom_vline(
+    xintercept = seq(
+      obs_per_year + 0.5,
+      n - obs_per_year + 0.5,
+      by = obs_per_year
+    ),
+    colour = "grey90",
+    linetype = 2
+  ) +
+
+  geom_point(
+    data = bm_long,
+    colour = "#D55E00",
+    size = 2.5
+  ) +
+
+  facet_wrap(
+    ~ var,
+    ncol = 1,
+    scales = "free_y",
+    labeller = as_labeller(c(x = "X", y = "Y"))
+  ) +
+
+  labs(
+    title = "Block maxima (marginal approach)",
+    subtitle = "One extreme per block per variable",
+    x = "Time",
+    y = NULL
+  ) +
+
+  theme_minimal(base_size = 15) +
+  theme(
+    panel.grid.minor = element_blank(),
+    panel.grid.major.x = element_blank(),
+    strip.text = element_text(face = "bold")
+  )
+```
+
+# Early history
+
+```{r, echo=FALSE,fig.align = 'center',  out.width="60%"}
+knitr::include_graphics("pics/jpic1.JPG")
+```
+
+# Tawn's Spawn Process
+
+```{r, echo = FALSE, message = FALSE, fig.width=6, fig.height=4, out.width="80%"}
 library(ggplot2)
 tawn <- data.frame(
     year = c(1991, 1994, 1995, 1997, 2000, 2003, 2005, 2006, 2007, 2009,
@@ -118,91 +578,141 @@ tawn_full <- data.frame(
     })
 )
 
-ggplot(tawn_full, aes(x = year, y = n_students)) +
-    geom_col(fill = "#2C7FB8", width = 0.8) +
-    geom_text(
-        aes(label = ifelse(n_students > 0, n_students, "")),
-        vjust = -0.3,
-        size = 3
+library(dplyr)
+library(ggplot2)
+
+tawn_plot <- tawn_full |>
+  mutate(highlight = year == 2026)
+
+ggplot(tawn_plot, aes(x = year, y = n_students, fill = highlight)) +
+  geom_col(width = 0.8) +
+  geom_text(
+    aes(label = ifelse(n_students > 0, n_students, "")),
+    vjust = -0.3,
+    size = 3
+  ) +
+  scale_fill_manual(
+    values = c(
+      "FALSE" = "#2C7FB8",  # original blue
+      "TRUE"  = "#A6CEE3"   # lighter blue for 2026
+    ),
+    guide = "none"
+  ) +
+  scale_x_continuous(
+    breaks = seq(1990, 2026, by = 5),
+    expand = expansion(mult = c(0.01, 0.02))
+  ) +
+  scale_y_continuous(
+    breaks = 0:max(tawn_full$n_students),
+    expand = expansion(mult = c(0, 0.1))
+  ) +
+  labs(
+    title = "Annual Jon Tawn PhD Output",
+    subtitle = "Number of PhD students graduating each year",
+    x = NULL,
+    y = "PhD students"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    panel.grid.minor = element_blank(),
+    plot.title = element_text(face = "bold"),
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+
+```
+
+
+# Return levels
+
+```{r, echo = FALSE, message=FALSE, warn = FALSE, fig.width=6, fig.height=4, out.width="80%"}
+
+tawn <- data.frame(
+    year = c(1991, 1994, 1995, 1997, 2000, 2003, 2005, 2006, 2007, 2009,
+             2010, 2012, 2013, 2014, 2015, 2016, 2018, 2019, 2020, 2021),
+    n_students = c(1, 1, 2, 3, 1, 4, 1, 1, 5, 1,
+                   1, 1, 2, 1, 2, 5, 2, 4, 1, 3)
+)
+
+years_full <- 1991:2021
+
+tawn_full <- data.frame(
+    year = years_full,
+    n_students = sapply(years_full, function(y) {
+        if (y %in% tawn$year) {
+            tawn$n_students[tawn$year == y]
+        } else {
+            0
+        }
+    })
+)
+
+X <- tawn_full$n_students
+
+library(ismev)
+
+gev_fit <- gev.fit(X, show = FALSE)
+# gev_fit
+
+
+# Return periods
+
+T <- seq(2, 50, by = 1)
+
+mu <- gev_fit$mle[1]
+sigma <- gev_fit$mle[2]
+xi <- gev_fit$mle[3]
+
+# Return level function
+z_T <- if (abs(xi) > 1e-6) {
+    mu + (sigma/xi) * ((-log(1 - 1/T))^(-xi) - 1)
+} else {
+    mu - sigma * log(-log(1 - 1/T))
+}
+
+library(ggplot2)
+
+df_rl <- data.frame(
+    T = T,
+    z_T = z_T
+)
+
+df_obs <- data.frame(
+    T = rep(1, length(X)),
+    X = X
+)
+
+ggplot(df_rl, aes(T, z_T)) +
+    geom_line(linewidth = 1.2, colour = "#2C7FB8") +
+    geom_hline(
+        yintercept = max(X),
+        colour = "red",
+        linetype = "dashed"
     ) +
-    scale_x_continuous(
-        breaks = seq(1990, 2026, by = 5),
-        expand = expansion(mult = c(0.01, 0.02))
-    ) +
-    scale_y_continuous(
-        breaks = 0:max(tawn_full$n_students),
-        expand = expansion(mult = c(0, 0.1))
+    geom_point(
+        data = df_obs,
+        aes(T, X),
+        size = 2,
+        alpha = 0.7
     ) +
     labs(
-        title = "Annual Jon Tawn PhD Output",
-        subtitle = "Number of PhD students graduating each year",
-        x = NULL,
-        y = "PhD students"
+        title = "PhD Student Numbers per Year",
+        x = "Return period (years)",
+        y = "Return level (students/year)"
     ) +
     theme_minimal(base_size = 14) +
     theme(
-        panel.grid.minor = element_blank(),
         plot.title = element_text(face = "bold"),
-        axis.text.x = element_text(angle = 45, hjust = 1)
+        panel.grid.minor = element_blank()
     )
-
 ```
 
-# While I'm away for the next couple of weeks...
+# Return levels
 
-```{r, echo=FALSE,fig.align = 'center', out.width="50%"}
-knitr::include_graphics("StuTasks.pdf")
+Once every 45 years we'd expect Jonathan to successfully supervise around 6.3 million PhD students.
+
+
+# Our Sheriff forever \begingroup\color{red}\faHeart\endgroup
+
+```{r, echo=FALSE,fig.align = 'center',  out.width="60%"}
+knitr::include_graphics("pics/jpic3.JPG")
 ```
-
-# Missing page of tasks for "next couple of weeks"
-
-\pause
-
-1. Prove Fermat's last theorem...
-
-\pause
-
-2. ... and the Riemann hypothesis.
-
-\pause
-
-
-3. Read Cox and Hinkley, Barndorff-Nielssen and Cox, Billingsley, Hastie, Tibshirani and Friedman, Bickel and Doksum, Lehmann and Casella, Karlin and Taylor, Durett, Kallenberg, Gelman et al, Bernardo and Smith, Beirlant et al. 
-
-\pause
-
-4. Actually, scrap that. Just read the library.
-
-\pause
-
-5. don't forget: avoid data for the moment. 
-
-# An aside
-
-While getting a list of book references to include above, ChatGPT gave me this insightful suggestion:
-
-\pause
-\vspace{1cm}
-> "Modelling Extremal Events": by Coles - Jon Tawn's own book; readable but the math can get very dense. 
-
-# A confession...
-
-\pause
-
-I *only* looked at data for that couple of weeks. 
-
-# Jon's philosophy as a supervisor
-
-> "A PhD is a training for research"
-
-Can also identify a pattern:
-
-* Take time to research scientific context as well as statistics
-
-* Choose and design models with care, using science and mathematics as steers where available.
-
-* Check the fit of models carefully.
-
-* Use model outputs to create a scientific narrative.
-
-
