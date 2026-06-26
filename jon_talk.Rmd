@@ -135,7 +135,7 @@ Myself, Anthony and Miguel de Carvalho are currently working on a Second Edition
 knitr::include_graphics("pics/ismev2a.pdf")
 ```
 
-# What made Jon special as a supervisor
+# What made Jon special as a supervisor?
 
 * His philosophy:
 
