@@ -50,11 +50,11 @@ knitr::include_graphics("pics/jpic3.JPG")
 ```
 
 
-# Academic highlights
+# Jon's academic highlights
 
 * BSc Mathematics (First Class Honours), Imperial College, London, 1982--85
 
-* Phd Statistics, University of Surrey, 1985--88
+* PhD Statistics, University of Surrey, 1985--88
 
 * Lecturer, University of Sheffield (1988–1992)
 
@@ -64,15 +64,8 @@ knitr::include_graphics("pics/jpic3.JPG")
 
 * Distinguished Professor of Statistics, Lancaster University (2017–present)
 
-# The role of chance
 
-\pause
-
-```{r, echo=FALSE,fig.align = 'center',  out.width="60%"}
-knitr::include_graphics("pics/jpic4.JPG")
-```
-
-# Awards
+# Jon's awards
 
 * RSS Guy Medal in Bronze (1993)
 
@@ -89,43 +82,44 @@ knitr::include_graphics("pics/jpic4.JPG")
 
 * Most distinguished professor in the world not to own a mobile phone. (1991 - present)
 
+# My background
 
+* BSc Mathematics, Sussex University, 1981
 
-# While I'm away for the next couple of weeks...
+* PGCE, Sussex University, 1982
+
+* College Teacher, Stoke-on-Trent/Rotherham, 1982-1987
+
+* MSc Statistics, Sheffield University, 1988
+
+* PhD Statistics, Sheffield University, 1991
+
+# Who are these handsome guys?
+
+\pause
+
+```{r, echo=FALSE,fig.align = 'center',  out.width="60%"}
+knitr::include_graphics("pics/jpic4.JPG")
+```
+
+# "While I'm away for the next couple of weeks..."
 
 ```{r, echo=FALSE,fig.align = 'center', out.width="50%"}
 knitr::include_graphics("pics/StuTasks.pdf")
 ```
 
-# Missing page of tasks for "next couple of weeks"
+# Two confessions...
 
 \pause
 
-1. Prove Fermat's last theorem...
+* That couple of weeks, I *only* looked at data.
 
 \pause
-
-2. ... and the Riemann hypothesis.
-
-\pause
-
-
-3. Read Cox and Hinkley, Barndorff-Nielssen and Cox, Billingsley, 
-Bickel and Doksum, Lehmann and Casella, Karlin and Taylor, Durett, Kallenberg, Gelman et al, Bernardo and Smith, Beirlant et al. 
-
-\pause
-
-4. Don't forget: avoid data for the moment. 
-
-# A confession...
-
-\pause
-
-That couple of weeks, I *only* looked at data.
+* To this day, I think I've only ever managed a few pages of de Hann and Resnick (1977) and de Haan (1985).
 
 # An aside
 
-While getting a list of book references to include above, ChatGPT gave me this insightful suggestion:
+While (ahem) "researching" for this talk, ChatGPT gave me this insightful book recommendation:
 
 \pause
 \vspace{1cm}
@@ -141,26 +135,25 @@ Myself, Anthony and Miguel de Carvalho are currently working on a Second Edition
 knitr::include_graphics("pics/ismev2a.pdf")
 ```
 
-# Jon's philosophy as a supervisor
+# What made Jon special as a supervisor
+
+* His philosophy:
 
 > "A PhD is a training for research"
 
-\pause
+* His generosity in sharing ideas.
 
-His methods were also a lesson:
+* The fact that his ideas were always brilliant.
 
-* Take time to research the scientific context to a problem, as well as the relevant statistics.
+* He'd give you space and time to get things wrong...
 
-* Choose and design models with care, using science and mathematics as steers where available.
+* ... but not too much space and time to get things wrong.
 
-* Check the fit of models carefully.
-
-* Use learnings from models to create a scientific narrative.
-
-* Seek to push back the boundaries of knowledge.
+* His sense of humanity and companionship.
 
 
-# An Outline of EVT
+
+# Extremes 101
 
 ```{r, echo=FALSE, message = FALSE, fig.align = 'center', out.width="80%"}
 library(dplyr)
@@ -324,12 +317,22 @@ bm <- bind_rows(
   bm_y |> mutate(series = "Y")
 )
 
-bm_long <- bm |>
-  pivot_longer(
-    cols = c(x, y),
-    names_to = "var",
-    values_to = "value"
-  )
+bm_long <- bind_rows(
+  bm_x |>
+    transmute(
+      time,
+      year,
+      var = "x",
+      value = x
+    ),
+  bm_y |>
+    transmute(
+      time,
+      year,
+      var = "y",
+      value = y
+    )
+)
 
 # --------------------------------------------------
 # Point process (joint extremes)
@@ -416,7 +419,7 @@ p_space <- ggplot(dat, aes(x = x, y = y)) +
 
   labs(
     title = "Point process approach",
-    subtitle = "All observations with max(X, Y) > u",
+    subtitle = "All observations with at least one extreme component",
     x = expression(X),
     y = expression(Y)
   ) +
@@ -439,7 +442,7 @@ p_time + p_space +
 ```
 
 
-# 50+ PhD Theses Summarised 
+# 50+ PhD theses summarised (slight simplification)
 
 ```{r, echo=FALSE,fig.align = 'center', out.width="50%"}
 
@@ -553,7 +556,7 @@ ggplot(dat, aes(x = x, y = y)) +
 
   labs(
     title = "Moving from blue to orange regions",
-    subtitle = "Mathematical models to make the jump",
+    subtitle = "Mathematical models to link the two",
     x = expression(X),
     y = expression(Y)
   ) +
@@ -672,13 +675,21 @@ ggplot(dat_long, aes(time, value)) +
   )
 ```
 
-# Early history
+# It can't be a coincidence
 
 ```{r, echo=FALSE,fig.align = 'center',  out.width="60%"}
 knitr::include_graphics("pics/jpic1.JPG")
 ```
 
-# Tawn's Spawn Process
+# Is Jon Tawn an Under-Achiever?
+
+* This is collaborative work with a mystery collaborator. 
+
+* Hint: it's the same collaborator who gave me Jon's book recommendation during my "research".
+
+* He/she suggested fitting a standard extreme value distribution to the number of Jon's PhD students graduating each year.
+
+# Tawn's spawn process
 
 ```{r, echo = FALSE, message = FALSE, fig.width=6, fig.height=4, out.width="80%"}
 library(ggplot2)
@@ -832,10 +843,112 @@ ggplot(df_rl, aes(T, z_T)) +
 
 # Return levels
 
-Once every 45 years we'd expect Jonathan to successfully supervise around 6.3 million PhD students.
+Interpretation: once every 45 years we'd expect Jonathan to successfully supervise around 6.3 million PhD students.
+
+# Poisson regression analysis
+
+```{r, echo = FALSE, message=FALSE, warning = FALSE, fig.width=6, fig.height=4, out.width="80%"}
+
+## -------------------------
+## Data
+## -------------------------
+dat <- data.frame(
+  year = 1991:2021,
+  n_students = c(
+    1,0,0,1,2,0,3,0,0,1,0,0,4,0,1,1,5,0,1,1,0,
+    1,2,1,2,5,0,2,4,1,3
+  )
+)
+
+dat$year_c <- dat$year - mean(dat$year)
+
+## -------------------------
+## Models
+## -------------------------
+fit_orig <- glm(
+  n_students ~ year_c,
+  family = poisson,
+  data = dat
+)
+
+dat_aug <- rbind(
+  dat[, c("year", "n_students")],
+  data.frame(year = 2026, n_students = 6)
+)
+
+dat_aug$year_c <- dat_aug$year - mean(dat_aug$year)
+
+fit_aug <- glm(
+  n_students ~ year_c,
+  family = poisson,
+  data = dat_aug
+)
+
+## -------------------------
+## Prediction grid
+## -------------------------
+newdat <- data.frame(
+  year = seq(1991, 2026, length.out = 300)
+)
+
+## original model predictions + CI
+newdat$year_c <- newdat$year - mean(dat$year)
+
+p1 <- predict(fit_orig, newdata = newdat, type = "link", se.fit = TRUE)
+
+newdat$orig <- exp(p1$fit)
+newdat$orig_lwr <- exp(p1$fit - 1.96 * p1$se.fit)
+newdat$orig_upr <- exp(p1$fit + 1.96 * p1$se.fit)
+
+## augmented model predictions (no CI shown for clarity)
+newdat$year_c <- newdat$year - mean(dat_aug$year)
+
+p2 <- predict(fit_aug, newdata = newdat, type = "link", se.fit = TRUE)
+
+newdat$aug <- exp(p2$fit)
+
+## hypothetical point
+extra <- data.frame(year = 2026, n_students = 6)
+
+## -------------------------
+## Plot
+## -------------------------
+ggplot() +
+  ## observed data
+  geom_point(
+    data = dat,
+    aes(year, n_students),
+    size = 1.5,
+    colour = "steelblue"
+  ) +
+
+  ## hypothetical point
+  geom_point(
+    data = extra,
+    aes(year, n_students),
+    size = 3.2,
+    shape = 17,
+    colour = "steelblue"
+  ) +
+
+  scale_colour_manual(
+    name = "Model",
+    values = c(
+      "Original model" = "steelblue4",
+      "Including 2026 = 6" = "firebrick3"
+    )
+  ) +
+
+  labs(
+    x = "Year",
+    y = "Number of students"
+  ) +
+
+  theme_minimal(base_size = 15) 
+```
 
 
-# Poisson analysis
+# Poisson regression analysis
 
 ```{r, echo = FALSE, message=FALSE, warn = FALSE, fig.width=6, fig.height=4, out.width="80%"}
 
@@ -917,8 +1030,8 @@ ggplot() +
   geom_point(
     data = dat,
     aes(year, n_students),
-    size = 2.6,
-    colour = "black"
+    size = 1.5,
+    colour = "steelblue"
   ) +
 
   ## hypothetical point
@@ -927,7 +1040,7 @@ ggplot() +
     aes(year, n_students),
     size = 3.2,
     shape = 17,
-    colour = "grey30"
+    colour = "steelblue"
   ) +
 
   ## original model
@@ -971,6 +1084,15 @@ ggplot() +
     axis.text = element_text(colour = "black")
   )
 ```
+
+
+# A few technicalities
+
+1. No improvement with a nonparametric smoother.
+
+2. No strong evidence of over-dispersion.
+
+3. Evidence for a positive trend is significant at around the 1% level.
 
 # Let's extrapolate (don't try this at home, kids)
 
@@ -1090,11 +1212,24 @@ scale_x_continuous(
 
 * Despite my efforts to prove otherwise, it's probably not fair to call Jonathan an under-achiever.
 
-# On Behalf of All of Us...
+# A final aside
+
+* At a recent meeting of GAMEX at Bologna University, Sebastian Engelke (University of Geneva) talked about the limitations of AI models for predicting extreme weather events.
 
 \pause
 
-You will forever be our Sheriff \begingroup\color[RGB]{255,215,0}\faStar\endgroup
+* Solution: incorporate a version of the Heffernan and Tawn model to extrapolate beyond what AI "knows". 
+
+\pause
+
+* Conclusion: even in a world where AI forces us to question our relevance, Jonathan's contributions will always stay relevant. 
+
+
+# And finally, a thank you from all of us...
+
+\pause
+
+You will forever be the sheriff \begingroup\color[RGB]{255,215,0}\faStar\endgroup
 
 ```{r, echo=FALSE,fig.align = 'center',  out.width="50%"}
 knitr::include_graphics("pics/jpic3.JPG")
