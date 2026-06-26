@@ -63,6 +63,12 @@ knitr::include_graphics("pics/jpic3.JPG")
 
 * Distinguished Professor of Statistics, Lancaster University (2017–present)
 
+# Rogue's Gallery
+
+```{r, echo=FALSE,fig.align = 'center',  out.width="60%"}
+knitr::include_graphics("pics/jpic4.JPG")
+```
+
 # Awards
 
 * RSS Guy Medal in Bronze (1993)
@@ -169,7 +175,7 @@ His methods were also a lesson:
 
 # An Outline of EVT
 
-```{r, echo=FALSE,fig.align = 'center', out.width="80%"}
+```{r, echo=FALSE, message = FALSE, fig.align = 'center', out.width="80%"}
 library(dplyr)
 library(ggplot2)
 

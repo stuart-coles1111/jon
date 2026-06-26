@@ -117,7 +117,7 @@ tawn <- data.frame(
 )
 
 # Define threshold
-threshold <- 2.5
+threshold <- 1.5
 
 # Extract exceedances
 exceedances <- tawn$n_students[tawn$n_students > threshold] - threshold
@@ -154,3 +154,183 @@ legend("topleft", legend=c("5-year", "10-year"), col=c("blue","red"), lwd=2)
 
 # Optional: diagnostic plots
 plot(fit)
+
+
+
+======
+
+    dat <- data.frame(
+        year = c(1991,1994,1995,1997,2000,2003,2005,2006,2007,2009,
+                 2010,2012,2013,2014,2015,2016,2018,2019,2020,2021),
+        n_students = c(1,1,2,3,1,4,1,1,5,1,
+                       1,1,2,1,2,5,2,4,1,3)
+    )
+
+dat$year_c <- dat$year - mean(dat$year)
+
+fit <- glm(
+    n_students ~ year_c,
+    family = poisson(link = "log"),
+    data = dat
+)
+
+summary(fit)
+
+library(ggplot2)
+
+dat$fit <- predict(fit, type = "response")
+
+ggplot(dat, aes(year, n_students)) +
+    geom_point(size = 2.5) +
+    geom_line(aes(y = fit), colour = "steelblue", linewidth = 1.2) +
+    labs(
+        x = "Year",
+        y = "Number of students"
+    ) +
+    theme_minimal(base_size = 14)
+
+newdat <- data.frame(
+    year = seq(min(dat$year), max(dat$year), length.out = 200)
+)
+
+newdat$year_c <- newdat$year - mean(dat$year)
+
+pred <- predict(fit, newdat, type = "link", se.fit = TRUE)
+
+newdat$fit <- exp(pred$fit)
+newdat$lwr <- exp(pred$fit - 1.96 * pred$se.fit)
+newdat$upr <- exp(pred$fit + 1.96 * pred$se.fit)
+
+ggplot(dat, aes(year, n_students)) +
+    geom_point(size = 2.5) +
+    geom_ribbon(
+        data = newdat,
+        aes(x = year, ymin = lwr, ymax = upr),
+        inherit.aes = FALSE,
+        fill = "steelblue",
+        alpha = 0.2
+    ) +
+    geom_line(
+        data = newdat,
+        aes(x = year, y = fit),
+        inherit.aes = FALSE,
+        colour = "steelblue",
+        linewidth = 1.2
+    ) +
+    labs(
+        x = "Year",
+        y = "Number of students"
+    ) +
+    theme_minimal(base_size = 14)
+
+fit_pois = fit_pois
+
+dispersion <- sum(residuals(fit, type = "pearson")^2) / fit$df.residual
+dispersion
+
+library(survival)
+library(tidyr)
+library(dplyr)
+library(ggplot2)
+
+## Annual counts
+dat <- data.frame(
+    year = c(1991,1994,1995,1997,2000,2003,2005,2006,2007,2009,
+             2010,2012,2013,2014,2015,2016,2018,2019,2020,2021),
+    n_students = c(1,1,2,3,1,4,1,1,5,1,
+                   1,1,2,1,2,5,2,4,1,3)
+)
+
+## Expand to one row per graduate
+graduates <- dat |>
+    uncount(n_students) |>
+    mutate(status = 1)
+
+## Add six right-censored students
+censored <- data.frame(
+    year = rep(2021, 6),
+    status = 0
+)
+
+surv_dat <- bind_rows(graduates, censored)
+
+## Fit Weibull survival model
+fit <- survreg(
+    Surv(year, status) ~ 1,
+    data = surv_dat,
+    dist = "weibull"
+)
+
+summary(fit)
+
+library(ggplot2)
+
+## ------------------------------
+## Poisson regression predictions
+## ------------------------------
+
+newdat <- data.frame(
+    year = seq(min(dat$year), 2030, by = 0.1)
+)
+
+newdat$year_c <- newdat$year - mean(dat$year)
+
+newdat$poisson <-
+    predict(fit_pois,
+            newdata = newdat,
+            type = "response")
+
+## ------------------------------
+## Survival model predictions
+## ------------------------------
+
+N <- sum(dat$n_students) + 6
+
+shape <- 1 / fit_surv$scale
+scale <- exp(coef(fit_surv))
+
+F0 <- pweibull(newdat$year,
+               shape = shape,
+               scale = scale)
+
+F1 <- pweibull(newdat$year + 1,
+               shape = shape,
+               scale = scale)
+
+newdat$survival <- N * (F1 - F0)
+
+## ------------------------------
+## Plot
+## ------------------------------
+
+ggplot(dat, aes(year, n_students)) +
+
+    geom_point(size = 2.8) +
+
+    geom_line(
+        data = newdat,
+        aes(y = poisson, colour = "Poisson regression"),
+        linewidth = 1.2
+    ) +
+
+    geom_line(
+        data = newdat,
+        aes(y = survival, colour = "Survival model"),
+        linewidth = 1.2
+    ) +
+
+    scale_colour_manual(
+        values = c(
+            "Poisson regression" = "#0072B2",
+            "Survival model" = "#D55E00"
+        ),
+        name = NULL
+    ) +
+
+    labs(
+        x = "Year",
+        y = "Graduates per year"
+    ) +
+
+    theme_minimal(base_size = 15)
+
