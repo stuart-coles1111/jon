@@ -18,38 +18,39 @@ header-includes:
 fonttheme: "structurebold"
 ---
 
-# Ancient history
+# Who do you think you are?
 
-    
+\pause
+
 ```{=latex}
 
 \vspace {0.5cm}
-\centering
+\centering 
 \input{lineage.tex}
 ```
 
-# Early history
+# Early signs of a love of maths...
 
 ```{r, echo=FALSE,fig.align = 'center',  out.width="60%"}
 knitr::include_graphics("pics/jpic1.JPG")
 ```
 
 
-# Early history
+# Early signs of a dislike for travel...
 
 ```{r, echo=FALSE,fig.align = 'center',  out.width="60%"}
 knitr::include_graphics("pics/jpic2.JPG")
 ```
 
 
-# Early history
+# The sheriff...
 
 ```{r, echo=FALSE,fig.align = 'center',  out.width="60%"}
 knitr::include_graphics("pics/jpic3.JPG")
 ```
 
 
-# Recent history
+# Academic highlights
 
 * BSc Mathematics (First Class Honours), Imperial College, London, 1982--85
 
@@ -63,7 +64,9 @@ knitr::include_graphics("pics/jpic3.JPG")
 
 * Distinguished Professor of Statistics, Lancaster University (2017–present)
 
-# Rogue's Gallery
+# The role of chance
+
+\pause
 
 ```{r, echo=FALSE,fig.align = 'center',  out.width="60%"}
 knitr::include_graphics("pics/jpic4.JPG")
@@ -87,25 +90,11 @@ knitr::include_graphics("pics/jpic4.JPG")
 * Most distinguished professor in the world not to own a mobile phone. (1991 - present)
 
 
-# Back to Recent history
-
-* BSc Mathematics (First Class Honours), Imperial College, London, 1982--85
-
-* Phd Statistics, University of Surrey, 1985--88
-
-* Lecturer, University of Sheffield (1988–1992)
-
-* Senior Lecturer, Lancaster University (1992–1996)
-
-* Professor of Statistics, Lancaster University (1996–2017)
-
-* Distinguished Professor of Statistics, Lancaster University (2017–present)
-
 
 # While I'm away for the next couple of weeks...
 
 ```{r, echo=FALSE,fig.align = 'center', out.width="50%"}
-knitr::include_graphics("StuTasks.pdf")
+knitr::include_graphics("pics/StuTasks.pdf")
 ```
 
 # Missing page of tasks for "next couple of weeks"
@@ -126,11 +115,13 @@ Bickel and Doksum, Lehmann and Casella, Karlin and Taylor, Durett, Kallenberg, G
 
 \pause
 
-4. Actually, scrap that. Just read the library.
+4. Don't forget: avoid data for the moment. 
+
+# A confession...
 
 \pause
 
-5. Don't forget: avoid data for the moment. 
+That couple of weeks, I *only* looked at data.
 
 # An aside
 
@@ -140,16 +131,12 @@ While getting a list of book references to include above, ChatGPT gave me this i
 \vspace{1cm}
 > "Modelling Extremal Events": by Coles - Jon Tawn's own book; readable but the math can get very dense. 
 
-# A confession...
 
-\pause
-
-I *only* looked at data for that couple of weeks. 
-
-# A plug...
+# A shameless plug...
 
 Myself, Anthony and Miguel de Carvalho are currently working on a Second Edition of "Jon's book":
 
+\vspace{1cm}
 ```{r, echo=FALSE,fig.align = 'center',  out.width="30%"}
 knitr::include_graphics("pics/ismev2a.pdf")
 ```
@@ -451,6 +438,137 @@ p_time + p_space +
   )
 ```
 
+
+# 50+ PhD Theses Summarised 
+
+```{r, echo=FALSE,fig.align = 'center', out.width="50%"}
+
+library(ggplot2)
+library(dplyr)
+
+set.seed(123)
+
+n_years <- 10
+obs_per_year <- 20
+n <- n_years * obs_per_year
+
+dat <- data.frame(
+  time = 1:n,
+  year = rep(1:n_years, each = obs_per_year)
+)
+
+dat$x <- rgamma(n, shape = 2, scale = 1)
+dat$y <- 0.7 * dat$x + rgamma(n, shape = 2, scale = 0.7)
+
+u  <- quantile(pmax(dat$x, dat$y), 0.90)
+u2 <- quantile(pmax(dat$x, dat$y), 0.97)
+
+pp <- dat %>% filter(pmax(x, y) > u)
+
+lim <- max(dat$x, dat$y)
+off <- 0.06 * lim
+
+ggplot(dat, aes(x = x, y = y)) +
+
+  # -----------------------------
+  # FIT REGION: x > u or y > u
+  # -----------------------------
+  annotate("rect",
+           xmin = u, xmax = lim,
+           ymin = 0, ymax = lim,
+           fill = "#2C7FB8", alpha = 0.06) +
+  annotate("rect",
+           xmin = 0, xmax = lim,
+           ymin = u, ymax = lim,
+           fill = "#2C7FB8", alpha = 0.06) +
+
+  # -----------------------------
+  # EXTRAPOLATION REGION: x > u' or y > u'
+  # -----------------------------
+  annotate("rect",
+           xmin = u2, xmax = lim,
+           ymin = 0, ymax = lim,
+           fill = "#D95F02", alpha = 0.07) +
+  annotate("rect",
+           xmin = 0, xmax = lim,
+           ymin = u2, ymax = lim,
+           fill = "#D95F02", alpha = 0.07) +
+
+  # -----------------------------
+  # DATA + EXCEEDANCES
+  # -----------------------------
+  geom_point(colour = "grey80", size = 1.2) +
+  geom_point(data = pp, colour = "#0072B2", size = 2) +
+
+  # -----------------------------
+  # THRESHOLD LINES
+  # -----------------------------
+  geom_vline(xintercept = u,  colour = "#2C7FB8", linewidth = 0.7) +
+  geom_hline(yintercept = u,  colour = "#2C7FB8", linewidth = 0.7) +
+  geom_vline(xintercept = u2, colour = "#D95F02", linewidth = 0.7) +
+  geom_hline(yintercept = u2, colour = "#D95F02", linewidth = 0.7) +
+
+  # -----------------------------
+  # AXIS LABELS FOR u and u'
+  # -----------------------------
+
+  annotate("text",
+           x = u,
+           y = -off,
+           label = "u",
+           colour = "#2C7FB8",
+           size = 5) +
+
+  annotate("text",
+           x = u2,
+           y = -off,
+           label = "u'",
+           colour = "#D95F02",
+           size = 5) +
+
+  annotate("text",
+           x = -off,
+           y = u,
+           label = "u",
+           colour = "#2C7FB8",
+           size = 5,
+           angle = 90) +
+
+  annotate("text",
+           x = -off,
+           y = u2,
+           label = "u'",
+           colour = "#D95F02",
+           size = 5,
+           angle = 90) +
+
+  # -----------------------------
+  # FINAL FORMATTING
+  # -----------------------------
+  coord_equal(
+    xlim = c(0, lim),
+    ylim = c(0, lim),
+    clip = "off"
+  ) +
+
+  labs(
+    title = "Moving from blue to orange regions",
+    subtitle = "Mathematical models to make the jump",
+    x = expression(X),
+    y = expression(Y)
+  ) +
+
+  theme_minimal(base_size = 15) +
+  theme(
+    panel.grid.minor = element_blank(),
+    panel.grid.major = element_line(colour = "grey92"),
+    plot.title = element_text(face = "bold"),
+
+    # CRITICAL: make room for axis labels outside panel
+    plot.margin = margin(20, 40, 20, 40)
+  )
+```
+ 
 # Component-by-component maxima
 
 ```{r, echo=FALSE,fig.align = 'center', out.width="80%"}
@@ -717,8 +835,267 @@ ggplot(df_rl, aes(T, z_T)) +
 Once every 45 years we'd expect Jonathan to successfully supervise around 6.3 million PhD students.
 
 
-# Our Sheriff forever \begingroup\color{red}\faHeart\endgroup
+# Poisson analysis
 
-```{r, echo=FALSE,fig.align = 'center',  out.width="60%"}
+```{r, echo = FALSE, message=FALSE, warn = FALSE, fig.width=6, fig.height=4, out.width="80%"}
+
+## -------------------------
+## Data
+## -------------------------
+dat <- data.frame(
+  year = 1991:2021,
+  n_students = c(
+    1,0,0,1,2,0,3,0,0,1,0,0,4,0,1,1,5,0,1,1,0,
+    1,2,1,2,5,0,2,4,1,3
+  )
+)
+
+dat$year_c <- dat$year - mean(dat$year)
+
+## -------------------------
+## Models
+## -------------------------
+fit_orig <- glm(
+  n_students ~ year_c,
+  family = poisson,
+  data = dat
+)
+
+dat_aug <- rbind(
+  dat[, c("year", "n_students")],
+  data.frame(year = 2026, n_students = 6)
+)
+
+dat_aug$year_c <- dat_aug$year - mean(dat_aug$year)
+
+fit_aug <- glm(
+  n_students ~ year_c,
+  family = poisson,
+  data = dat_aug
+)
+
+## -------------------------
+## Prediction grid
+## -------------------------
+newdat <- data.frame(
+  year = seq(1991, 2026, length.out = 300)
+)
+
+## original model predictions + CI
+newdat$year_c <- newdat$year - mean(dat$year)
+
+p1 <- predict(fit_orig, newdata = newdat, type = "link", se.fit = TRUE)
+
+newdat$orig <- exp(p1$fit)
+newdat$orig_lwr <- exp(p1$fit - 1.96 * p1$se.fit)
+newdat$orig_upr <- exp(p1$fit + 1.96 * p1$se.fit)
+
+## augmented model predictions (no CI shown for clarity)
+newdat$year_c <- newdat$year - mean(dat_aug$year)
+
+p2 <- predict(fit_aug, newdata = newdat, type = "link", se.fit = TRUE)
+
+newdat$aug <- exp(p2$fit)
+
+## hypothetical point
+extra <- data.frame(year = 2026, n_students = 6)
+
+## -------------------------
+## Plot
+## -------------------------
+ggplot() +
+
+  ## confidence band (original model only)
+  geom_ribbon(
+    data = newdat,
+    aes(x = year, ymin = orig_lwr, ymax = orig_upr),
+    fill = "steelblue",
+    alpha = 0.18
+  ) +
+
+  ## observed data
+  geom_point(
+    data = dat,
+    aes(year, n_students),
+    size = 2.6,
+    colour = "black"
+  ) +
+
+  ## hypothetical point
+  geom_point(
+    data = extra,
+    aes(year, n_students),
+    size = 3.2,
+    shape = 17,
+    colour = "grey30"
+  ) +
+
+  ## original model
+  geom_line(
+    data = newdat,
+    aes(year, orig, colour = "Original model"),
+    linewidth = 1.3
+  ) +
+
+  ## augmented model
+  geom_line(
+    data = newdat,
+    aes(year, aug, colour = "Including 2026 = 6"),
+    linewidth = 1.3,
+    linetype = "dashed"
+  ) +
+
+  scale_colour_manual(
+    name = "Model",
+    values = c(
+      "Original model" = "steelblue4",
+      "Including 2026 = 6" = "firebrick3"
+    )
+  ) +
+
+  labs(
+    x = "Year",
+    y = "Number of students"
+  ) +
+
+  theme_minimal(base_size = 15) +
+
+  theme(
+    panel.grid.minor = element_blank(),
+    panel.grid.major.x = element_blank(),
+    panel.grid.major.y = element_line(colour = "grey85"),
+    legend.position = "top",
+    legend.title = element_text(size = 12),
+    legend.text = element_text(size = 11),
+    axis.title = element_text(face = "bold"),
+    axis.text = element_text(colour = "black")
+  )
+```
+
+# Let's extrapolate (don't try this at home, kids)
+
+```{r, echo = FALSE, message=FALSE, warning = FALSE, fig.width=6, fig.height=4, out.width="80%"}
+library(ggplot2)
+
+## -------------------------
+## Data + model
+## -------------------------
+dat <- data.frame(
+  year = 1991:2021,
+  n_students = c(
+    1,0,0,1,2,0,3,0,0,1,0,0,4,0,1,1,5,0,1,1,0,
+    1,2,1,2,5,0,2,4,1,3
+  )
+)
+
+dat$year_c <- dat$year - mean(dat$year)
+
+fit <- glm(
+  n_students ~ year_c,
+  family = poisson,
+  data = dat
+)
+
+## -------------------------
+## Extrapolation grid
+## -------------------------
+newdat <- data.frame(
+  year = seq(1991, 2500, by = 1)
+)
+
+newdat$year_c <- newdat$year - mean(dat$year)
+newdat$fit <- exp(predict(fit, newdata = newdat, type = "link"))
+
+## -------------------------
+## Crossing point (6.3M)
+## -------------------------
+target <- 6.3e6
+idx <- min(which(newdat$fit >= target))
+
+cross_year <- newdat$year[idx]
+
+## -------------------------
+## Axis limits
+## -------------------------
+x_max <- cross_year + 30
+y_max <- target * 1.05
+
+## -------------------------
+## Plot
+## -------------------------
+ggplot(newdat, aes(year, fit)) +
+
+  ## model curve
+  geom_line(
+    colour = "steelblue4",
+    linewidth = 0.9
+  ) +
+
+  ## observed data
+  geom_point(
+    data = dat,
+    aes(year, n_students),
+    inherit.aes = FALSE,
+    colour = "black",
+    size = 2
+  ) +
+
+  ## horizontal threshold
+  geom_hline(
+    yintercept = target,
+    colour = "firebrick3",
+    linewidth = 0.6
+  ) +
+
+  ## vertical crossing line
+  geom_vline(
+    xintercept = cross_year,
+    colour = "firebrick3",
+    linewidth = 0.6
+  ) +
+
+  ## x-axis shows special label "2346"
+scale_x_continuous(
+  breaks = c(1990, cross_year),
+  labels = c("1990", "2346")
+)+
+
+  coord_cartesian(
+    xlim = c(1991, x_max),
+    ylim = c(0, y_max)
+  ) +
+
+  labs(
+    x = "Year",
+    y = "Expected number of students"
+  ) +
+
+  theme_minimal(base_size = 15) +
+
+  theme(
+    panel.grid.minor = element_blank(),
+    panel.grid.major.x = element_blank(),
+    panel.grid.major.y = element_line(colour = "grey88"),
+    axis.title = element_text(face = "bold"),
+    axis.text = element_text(colour = "black"),
+    plot.margin = margin(8, 12, 8, 8)
+  )
+```
+
+# Conclusion
+
+* Jonathan will hit the 6.3 million students per year target, but won't be able to retire until 2346. 
+
+\pause
+
+* Despite my efforts to prove otherwise, it's probably not fair to call Jonathan an under-achiever.
+
+# On Behalf of All of Us...
+
+\pause
+
+You will forever be our Sheriff \begingroup\color[RGB]{255,215,0}\faStar\endgroup
+
+```{r, echo=FALSE,fig.align = 'center',  out.width="50%"}
 knitr::include_graphics("pics/jpic3.JPG")
 ```
